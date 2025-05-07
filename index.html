@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Empréstimo Fácil</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .resultado {
+      margin-top: 20px;
+      background: #e9f7ef;
+      padding: 15px;
+      border-radius: 5px;
+      color: #155724;
+    }
+    #whatsappBtn {
+      background: #25d366;
+      margin-top: 10px;
+    }
+    #whatsappBtn:hover {
+      background: #1ebe5d;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Simule seu Empréstimo</h2>
+  <label for="nome">Seu Nome:</label>
+  <input type="text" id="nome" placeholder="Digite seu nome">
+
+  <label for="valor">Valor do Empréstimo (R$):</label>
+  <input type="number" id="valor" placeholder="Digite o valor">
+
+  <label for="prazo">Prazo (meses):</label>
+  <select id="prazo">
+    <option value="6">6 meses</option>
+    <option value="12">12 meses</option>
+    <option value="24">24 meses</option>
+    <option value="36">36 meses</option>
+  </select>
+
+  <button onclick="simular()">Calcular Parcelas</button>
+
+  <div id="resultado" class="resultado" style="display: none;"></div>
+  <button id="whatsappBtn" style="display: none;" onclick="enviarWhatsApp()">Enviar pelo WhatsApp</button>
+</div>
+
+<script>
+  let valorSimulado = 0;
+  let prazoSimulado = 0;
+  let parcelaFinal = 0;
+
+  function simular() {
+    const valor = parseFloat(document.getElementById("valor").value);
+    const prazo = parseInt(document.getElementById("prazo").value);
+    const jurosMensal = 0.02;
+    const nome = document.getElementById("nome").value;
+
+    if (!valor || valor <= 0 || nome.trim() === "") {
+      alert("Preencha todos os campos corretamente.");
+      return;
+    }
+
+    const parcela = (valor * (jurosMensal * Math.pow(1 + jurosMensal, prazo))) / (Math.pow(1 + jurosMensal, prazo) - 1);
+    valorSimulado = valor;
+    prazoSimulado = prazo;
+    parcelaFinal = parcela;
+
+    const resultado = document.getElementById("resultado");
+    resultado.style.display = "block";
+    resultado.innerHTML = `Olá, <strong>${nome}</strong>!<br>Você pagará <strong>R$ ${parcela.toFixed(2)}</strong> por mês durante <strong>${prazo} meses</strong>.`;
+
+    document.getElementById("whatsappBtn").style.display = "block";
+  }
+
+  function enviarWhatsApp() {
+    const nome = document.getElementById("nome").value;
+    const telefoneDestino = "5511986348334";
+    const mensagem = `Olá, meu nome é ${nome}. Simulei um empréstimo de R$ ${valorSimulado.toFixed(2)} para pagar em ${prazoSimulado} meses. O valor da parcela ficou em R$ ${parcelaFinal.toFixed(2)}. Gostaria de mais informações.`;
+
+    const url = `https://wa.me/${telefoneDestino}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, "_blank");
+  }
+</script>
+
+</body>
+</html>
